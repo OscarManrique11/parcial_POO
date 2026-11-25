@@ -112,6 +112,33 @@ public class MenuPokemon extends JFrame {    private JPanel contentPane;
                 );
             }
         });
+        verEquipoButton2.addActionListener(e -> {
+            String idTexto = JOptionPane.showInputDialog(this, "ID del entrenador:");
+            if (idTexto == null) {
+                return;
+            }
+
+            try {
+                int idEntrenador = Integer.parseInt(idTexto.trim());
+                String equipo = Operation.obtenerEquipoTexto(idEntrenador);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        equipo,
+                        "Equipo Pokémon",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "El ID debe ser un número.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        ex.getMessage(),
+                        "Error al leer el equipo",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
     }
 
     public static void main(String[] args) {
