@@ -130,4 +130,120 @@ public class Operation {
             );
         }
     }
+    public static boolean asignarPokemon(int idEntrenador, int idPokemon)
+            throws IOException {
+        if (buscarFilaPorId("entrenadores.csv", idEntrenador) == null) {
+            System.out.println("No existe ese entrenador.");
+            return false;
+        }
+
+        if (buscarFilaPorId("pokemons.csv", idPokemon) == null) {
+            System.out.println("No existe ese Pokémon.");
+            return false;
+        }
+
+        int cantidadPokemon = 0;
+
+        for (String fila : leerLineas("equipo_pokemon.csv")) {
+            String[] datos = fila.split(",", -1);
+            if (datos.length != 2) {
+                continue;
+            }
+
+            int entrenadorActual = parseId(datos[0]);
+            int pokemonActual = parseId(datos[1]);
+
+            if (pokemonActual == idPokemon) {
+                System.out.println("Ese Pokémon ya está asignado a un entrenador.");
+                return false;
+            }
+
+            if (entrenadorActual == idEntrenador) {
+                cantidadPokemon++;
+            }
+        }
+
+        if (cantidadPokemon >= 6) {
+            System.out.println("El equipo ya tiene seis Pokémon.");
+            return false;
+        }
+
+        agregarLinea("equipo_pokemon.csv", idEntrenador + "," + idPokemon);
+        System.out.println("Pokémon agregado al equipo.");
+        return true;
+    }
+
+    public static void mostrarEquipo(int idEntrenador) throws IOException {
+        String filaEntrenador =
+                buscarFilaPorId("entrenadores.csv", idEntrenador);
+
+        if (filaEntrenador == null) {
+            System.out.println("No existe ese entrenador.");
+            return;
+        }
+
+        String[] datosEntrenador = filaEntrenador.split(",", -1);
+        Entrenador entrenador = new Entrenador(
+                Integer.parseInt(datosEntrenador[0]),
+                datosEntrenador[1],
+                datosEntrenador[2]
+        );
+
+        for (String fila : leerLineas("equipo_pokemon.csv")) {
+            String[] asignacion = fila.split(",", -1);
+            if (asignacion.length != 2 ||
+                    parseId(asignacion[0]) != idEntrenador) {
+                continue;
+            }
+
+            int idPokemon = parseId(asignacion[1]);
+            String filaPokemon = buscarFilaPorId("pokemons.csv", idPokemon);
+
+            if (filaPokemon == null) {
+                continue;
+            }
+
+            String[] datosPokemon = filaPokemon.split(",", -1);
+            if (datosPokemon.length == 4) {
+                Pokemon pokemon = new Pokemon(
+                        Integer.parseInt(datosPokemon[0]),
+                        datosPokemon[1],
+                        datosPokemon[2],
+                        Integer.parseInt(datosPokemon[3])
+                );
+                entrenador.getEquipo().agregarPokemon(pokemon);
+            }
+        }
+
+        System.out.println("Equipo de " + entrenador.getNombre() + ":");
+        if (entrenador.getEquipo().getPokemons().isEmpty()) {
+            System.out.println("(vacío)");
+            return;
+        }
+
+        for (Pokemon pokemon : entrenador.getEquipo().getPokemons()) {
+            System.out.println("ID " + pokemon.getId() + " | " +
+                    pokemon.getNombre() + " | " + pokemon.getTipo() +
+                    " | nivel " + pokemon.getNivel());
+        }
+    }
+
+    private static String buscarFilaPorId(String archivo, int id)
+            throws IOException {
+        for (String fila : leerLineas(archivo)) {
+            String[] datos = fila.split(",", -1);
+            if (datos.length > 0 && parseId(datos[0]) == id) {
+                return fila;
+            }
+        }
+        return null;
+    }
+
+    private static int parseId(String texto) {
+        try {
+            return Integer.parseInt(texto.trim());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 }
