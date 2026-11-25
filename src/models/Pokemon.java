@@ -28,4 +28,9 @@ public class Pokemon {
     public int getNivel() {
         return nivel;
     }
+
+    @Override
+    public String toString() {
+        return "ID " + id + " - " + nombre + " (" + tipo + ", nivel " + nivel + ")";
+    }
 }

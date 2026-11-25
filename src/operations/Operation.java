@@ -246,4 +246,77 @@ public class Operation {
             return -1;
         }
     }
+
+    public static List<Entrenador> obtenerEntrenadores() throws IOException {
+        List<Entrenador> entrenadores = new ArrayList<>();
+        for (String fila : leerLineas("entrenadores.csv")) {
+            String[] datos = fila.split(",", -1);
+            if (datos.length == 3) {
+                try {
+                    entrenadores.add(new Entrenador(
+                            Integer.parseInt(datos[0].trim()),
+                            datos[1],
+                            datos[2]
+                    ));
+                } catch (NumberFormatException ignored) {
+                    // Omite filas con un ID inválido.
+                }
+            }
+        }
+        return entrenadores;
+    }
+
+    public static List<Pokemon> obtenerPokemons() throws IOException {
+        List<Pokemon> pokemons = new ArrayList<>();
+        for (String fila : leerLineas("pokemons.csv")) {
+            String[] datos = fila.split(",", -1);
+            if (datos.length == 4) {
+                try {
+                    pokemons.add(new Pokemon(
+                            Integer.parseInt(datos[0].trim()),
+                            datos[1],
+                            datos[2],
+                            Integer.parseInt(datos[3].trim())
+                    ));
+                } catch (NumberFormatException ignored) {
+                    // Omite filas con ID o nivel inválido.
+                }
+            }
+        }
+        return pokemons;
+    }
+
+    public static List<Pokemon> obtenerEquipo(int idEntrenador)
+            throws IOException {
+        List<Pokemon> equipo = new ArrayList<>();
+        for (String fila : leerLineas("equipo_pokemon.csv")) {
+            String[] asignacion = fila.split(",", -1);
+            if (asignacion.length != 2 ||
+                    parseId(asignacion[0]) != idEntrenador) {
+                continue;
+            }
+
+            String filaPokemon = buscarFilaPorId(
+                    "pokemons.csv", parseId(asignacion[1])
+            );
+            if (filaPokemon == null) {
+                continue;
+            }
+
+            String[] datos = filaPokemon.split(",", -1);
+            if (datos.length == 4) {
+                try {
+                    equipo.add(new Pokemon(
+                            Integer.parseInt(datos[0].trim()),
+                            datos[1],
+                            datos[2],
+                            Integer.parseInt(datos[3].trim())
+                    ));
+                } catch (NumberFormatException ignored) {
+                    // Omite filas con ID o nivel inválido.
+                }
+            }
+        }
+        return equipo;
+    }
 }

@@ -28,4 +28,9 @@ public class Entrenador {
     public Equipo getEquipo() {
         return equipo;
     }
+
+    @Override
+    public String toString() {
+        return "ID " + id + " - " + nombre + " (" + region + ")";
+    }
 }
