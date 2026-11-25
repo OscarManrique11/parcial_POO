@@ -74,6 +74,44 @@ public class MenuPokemon extends JFrame {    private JPanel contentPane;
                 );
             }
         });
+        agregarPokémonAlEquipoButton.addActionListener(e -> {
+            String entrenadorTexto = JOptionPane.showInputDialog(this, "ID del entrenador:");
+            if (entrenadorTexto == null) {
+                return;
+            }
+
+            String pokemonTexto = JOptionPane.showInputDialog(this, "ID del Pokémon:");
+            if (pokemonTexto == null) {
+                return;
+            }
+
+            try {
+                int idEntrenador = Integer.parseInt(entrenadorTexto.trim());
+                int idPokemon = Integer.parseInt(pokemonTexto.trim());
+
+                boolean asignado = Operation.asignarPokemon(idEntrenador, idPokemon);
+
+                if (asignado) {
+                    JOptionPane.showMessageDialog(this, "Pokémon agregado al equipo.");
+                } else {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "No se pudo agregar. Revisa los IDs y la consola de IntelliJ.",
+                            "No se pudo asignar",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Los IDs deben ser números.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        ex.getMessage(),
+                        "Error al guardar",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
     }
 
     public static void main(String[] args) {
