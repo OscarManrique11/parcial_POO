@@ -3,6 +3,7 @@ package operations;
 import models.Entrenador;
 import models.Pokemon;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -227,6 +228,59 @@ public class Operation {
                     " | nivel " + pokemon.getNivel());
         }
     }
+
+    public static String obtenerEquipoTexto(int idEntrenador) throws IOException {
+        String filaEntrenador = buscarFilaPorId("entrenadores.csv", idEntrenador);
+
+        if (filaEntrenador == null) {
+            return "No existe ese entrenador.";
+        }
+
+        String[] datosEntrenador = filaEntrenador.split(",", -1);
+        StringBuilder texto = new StringBuilder(
+                "Equipo de " + datosEntrenador[1] + ":\n"
+        );
+
+        int cantidad = 0;
+
+        for (String fila : leerLineas("equipo_pokemon.csv")) {
+            String[] asignacion = fila.split(",", -1);
+
+            if (asignacion.length != 2
+                    || parseId(asignacion[0]) != idEntrenador) {
+                continue;
+            }
+
+            String filaPokemon = buscarFilaPorId(
+                    "pokemons.csv",
+                    parseId(asignacion[1])
+            );
+
+            if (filaPokemon == null) {
+                continue;
+            }
+
+            String[] datosPokemon = filaPokemon.split(",", -1);
+            if (datosPokemon.length != 4) {
+                continue;
+            }
+
+            texto.append("ID ").append(datosPokemon[0])
+                    .append(" | ").append(datosPokemon[1])
+                    .append(" | ").append(datosPokemon[2])
+                    .append(" | nivel ").append(datosPokemon[3])
+                    .append("\n");
+
+            cantidad++;
+        }
+
+        if (cantidad == 0) {
+            texto.append("(vacío)");
+        }
+
+        return texto.toString();
+    }
+
 
     private static String buscarFilaPorId(String archivo, int id)
             throws IOException {

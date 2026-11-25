@@ -1,10 +1,12 @@
 import operations.Operation;
+import ui.MenuPokemon;
+import javax.swing.SwingUtilities;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void mainConsola(String[] args) {
         Scanner leer = new Scanner(System.in);
         int opcion;
 
@@ -57,6 +59,13 @@ public class Main {
                         + e.getMessage());
             }
         } while (opcion != 0);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MenuPokemon menu = new MenuPokemon();
+            menu.setVisible(true);
+        });
     }
 
     private static void mostrarMenu() {
