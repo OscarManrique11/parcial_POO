@@ -43,6 +43,37 @@ public class MenuPokemon extends JFrame {    private JPanel contentPane;
                 );
             }
         });
+        registrarPokémonButton.addActionListener(e -> {
+            String nombre = JOptionPane.showInputDialog(this, "Nombre del Pokémon:");
+            if (nombre == null || nombre.trim().isEmpty()) {
+                return;
+            }
+
+            String tipo = JOptionPane.showInputDialog(this, "Tipo del Pokémon:");
+            if (tipo == null || tipo.trim().isEmpty()) {
+                return;
+            }
+
+            String nivelTexto = JOptionPane.showInputDialog(this, "Nivel del Pokémon:");
+            if (nivelTexto == null) {
+                return;
+            }
+
+            try {
+                int nivel = Integer.parseInt(nivelTexto.trim());
+                Operation.crearPokemon(nombre.trim(), tipo.trim(), nivel);
+                JOptionPane.showMessageDialog(this, "Pokémon creado correctamente.");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "El nivel debe ser un número.");
+            } catch (IOException | IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        ex.getMessage(),
+                        "Error al crear Pokémon",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
     }
 
     public static void main(String[] args) {
